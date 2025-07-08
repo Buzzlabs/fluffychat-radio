@@ -37,6 +37,29 @@ class FluffyChatApp extends StatelessWidget {
   static final GoRouter router = GoRouter(
     routes: AppRoutes.routes,
     debugLogDiagnostics: true,
+    errorPageBuilder: (BuildContext context, GoRouterState state) {
+      return MaterialPage(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Página não encontrada'),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () => context.go('/'),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text('Home'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
   );
 
   @override
@@ -51,6 +74,7 @@ class FluffyChatApp extends StatelessWidget {
         scrollBehavior: CustomScrollBehavior(),
         localizationsDelegates: L10n.localizationsDelegates,
         supportedLocales: L10n.supportedLocales,
+        locale: const Locale('pt', 'BR'),
         routerConfig: router,
         builder: (context, child) => AppLockWidget(
           pincode: pincode,

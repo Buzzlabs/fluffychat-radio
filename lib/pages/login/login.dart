@@ -82,7 +82,26 @@ class LoginController extends State<Login> {
         initialDeviceDisplayName: PlatformInfos.clientName,
       );
     } on MatrixException catch (exception) {
-      setState(() => passwordError = exception.errorMessage);
+      String errorMessage;
+
+      switch (exception.error) {
+        case MatrixError.M_FORBIDDEN:
+          errorMessage = L10n.of(context).errorInvalidCredentials;
+          break;
+        case MatrixError.M_MISSING_PARAM:
+          errorMessage = L10n.of(context).errorMissingParam;
+          break;
+        case MatrixError.M_UNKNOWN_TOKEN:
+          errorMessage = L10n.of(context).errorSessionExpired;
+          break;
+        default:
+          errorMessage = L10n.of(context).errorUnknown;
+      }
+
+      setState(() {
+        passwordError = errorMessage;
+      });
+
       return setState(() => loading = false);
     } catch (exception) {
       setState(() => passwordError = exception.toString());
@@ -167,7 +186,6 @@ class LoginController extends State<Login> {
       cancelLabel: L10n.of(context).cancel,
       initialText:
           usernameController.text.isEmail ? usernameController.text : '',
-      hintText: L10n.of(context).enterAnEmailAddress,
       keyboardType: TextInputType.emailAddress,
     );
     if (input == null) return;
@@ -234,7 +252,14 @@ class LoginController extends State<Login> {
   static int sendAttempt = 0;
 
   @override
-  Widget build(BuildContext context) => LoginView(this);
+  Widget build(BuildContext context) => LoginView(
+        this,
+        client: widget.client,
+      );
+
+  void onMoreAction(MoreLoginActions action) {
+    PlatformInfos.showDialog(context);
+  }
 }
 
 extension on String {
@@ -246,3 +271,5 @@ extension on String {
 
   bool get isPhoneNumber => _phoneRegex.hasMatch(this);
 }
+
+enum MoreLoginActions { importBackup, privacy, about }

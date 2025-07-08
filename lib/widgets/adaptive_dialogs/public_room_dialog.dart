@@ -156,8 +156,9 @@ class PublicRoomDialog extends StatelessWidget {
                                   ),
                                   TextSpan(text: roomLink),
                                 ],
-                                style: theme.textTheme.bodyMedium
-                                    ?.copyWith(fontSize: 10),
+                                style: TextStyle(
+                                  color: theme.colorScheme.onSurface,
+                                ),
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -183,7 +184,10 @@ class PublicRoomDialog extends StatelessWidget {
                       L10n.of(context).countParticipants(
                         profile?.numJoinedMembers ?? 0,
                       ),
-                      style: const TextStyle(fontSize: 10),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: theme.colorScheme.onTertiary,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   if (topic != null && topic.isNotEmpty)

@@ -56,18 +56,22 @@ class NewPrivateChatView extends StatelessWidget {
                 onChanged: controller.searchUsers,
                 decoration: InputDecoration(
                   hintText: L10n.of(context).searchForUsers,
-                  filled: true,
-                  fillColor: theme.colorScheme.secondaryContainer,
                   border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
+                    borderSide: BorderSide(
+                      width: 2,
+                      color: theme.colorScheme.onSurface,
+                    ),
                     borderRadius: BorderRadius.circular(99),
                   ),
                   hintStyle: TextStyle(
-                    color: theme.colorScheme.onPrimaryContainer,
+                    color: theme.colorScheme.onSurface,
                     fontWeight: FontWeight.normal,
                   ),
                   prefixIcon: searchResponse == null
-                      ? const Icon(Icons.search_outlined)
+                      ? Icon(
+                          Icons.search_outlined,
+                          color: theme.colorScheme.onSurface,
+                        )
                       : FutureBuilder(
                           future: searchResponse,
                           builder: (context, snapshot) {
@@ -131,8 +135,8 @@ class NewPrivateChatView extends StatelessWidget {
                     const SizedBox(height: 8),
                     ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: theme.colorScheme.secondaryContainer,
-                        foregroundColor: theme.colorScheme.onSecondaryContainer,
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: theme.colorScheme.onPrimary,
                         child: Icon(Icons.adaptive.share_outlined),
                       ),
                       title: Text(L10n.of(context).shareInviteLink),
@@ -150,7 +154,7 @@ class NewPrivateChatView extends StatelessWidget {
                     if (PlatformInfos.isMobile)
                       ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: theme.colorScheme.primaryContainer,
+                          backgroundColor: theme.colorScheme.tertiary,
                           foregroundColor: theme.colorScheme.onPrimaryContainer,
                           child: const Icon(Icons.qr_code_scanner_outlined),
                         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_config.dart';
 
@@ -43,19 +44,67 @@ abstract class FluffyThemes {
     Brightness brightness, [
     Color? seed,
   ]) {
-    final colorScheme = ColorScheme.fromSeed(
-      brightness: brightness,
-      seedColor: seed ?? AppConfig.colorSchemeSeed ?? AppConfig.primaryColor,
+    const colorScheme = ColorScheme(
+      brightness: Brightness.dark,
+      primary: Color(0xFFE3ED55),
+      onPrimary: Color(0xFF212529),
+      primaryContainer: Color(0xFF82893F),
+      onPrimaryContainer: Color(0xFF212529),
+      secondary: Color(0xFFEE7F4B),
+      onSecondary: Color(0xFFFFFFFF),
+      secondaryContainer: Color(0xFFEE7F4B),
+      onSecondaryContainer: Color(0xFFADB5BD),
+      tertiary: Color(0xFF3D3D3D),
+      onTertiary: Color(0xFFFFFFFF),
+      tertiaryContainer: Color(0xFF3D3D3D),
+      onTertiaryContainer: Color(0xFFADB5BD),
+      surface: Color(0xFF212529),
+      onSurface: Color(0xFFADB5BD),
+      error: Color(0xFFB00020),
+      onError: Color(0xFFFFFFFF),
+      errorContainer: Color(0xFFCF6679),
+      onErrorContainer: Color(0xFF000000),
+      surfaceTint: Color(0xFFE3ED55),
+      outline: Color(0xFFE3ED55),
     );
+
     final isColumnMode = FluffyThemes.isColumnMode(context);
     return ThemeData(
+      textTheme: GoogleFonts.fredokaTextTheme(
+        Theme.of(context).textTheme.copyWith(
+              bodyMedium: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+                color: colorScheme.onSurface,
+              ),
+              bodySmall: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+                color: colorScheme.onSurface,
+              ),
+              headlineSmall: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+              titleLarge: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+              titleSmall: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+            ),
+      ),
+      splashColor: colorScheme.primary.withValues(alpha: 0.1),
       visualDensity: VisualDensity.standard,
       useMaterial3: true,
-      brightness: brightness,
+      brightness: Brightness.dark,
       colorScheme: colorScheme,
-      dividerColor: brightness == Brightness.dark
-          ? colorScheme.surfaceContainerHighest
-          : colorScheme.surfaceContainer,
+      dividerColor: colorScheme.tertiary,
       popupMenuTheme: PopupMenuThemeData(
         color: colorScheme.surfaceContainerLow,
         iconColor: colorScheme.onSurface,
@@ -66,8 +115,8 @@ abstract class FluffyThemes {
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: SegmentedButton.styleFrom(
-          iconColor: colorScheme.onSurface,
-          disabledIconColor: colorScheme.onSurface,
+          iconColor: colorScheme.onPrimary,
+          selectedBackgroundColor: colorScheme.primary,
         ),
       ),
       textSelectionTheme: TextSelectionThemeData(
@@ -75,17 +124,46 @@ abstract class FluffyThemes {
         selectionHandleColor: colorScheme.secondary,
       ),
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppConfig.borderRadius),
-        ),
+        filled: true,
+        fillColor: colorScheme.surface,
         contentPadding: const EdgeInsets.all(12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppConfig.inputBorderRadius),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppConfig.inputBorderRadius),
+          borderSide: BorderSide(color: colorScheme.onSurface, width: 0.3),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppConfig.inputBorderRadius),
+          borderSide: BorderSide(color: colorScheme.secondary),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppConfig.inputBorderRadius),
+          borderSide: BorderSide(color: colorScheme.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppConfig.inputBorderRadius),
+          borderSide: BorderSide(color: colorScheme.secondary),
+        ),
+        labelStyle: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: colorScheme.onSurface,
+        ),
+        prefixIconColor: colorScheme.onSurface,
       ),
       chipTheme: ChipThemeData(
         showCheckmark: false,
-        backgroundColor: colorScheme.surfaceContainer,
+        backgroundColor: colorScheme.tertiary,
+        selectedColor: colorScheme.primary.withValues(alpha: 0.2),
         side: BorderSide.none,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConfig.borderRadius),
+        ),
+        labelStyle: TextStyle(
+          color: colorScheme.onTertiary, // ou qualquer cor que deseje
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -101,15 +179,16 @@ abstract class FluffyThemes {
           systemNavigationBarIconBrightness: brightness.reversed,
           systemNavigationBarColor: colorScheme.surface,
         ),
+        foregroundColor: colorScheme.onSurface,
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           side: BorderSide(
             width: 1,
-            color: colorScheme.primary,
+            color: colorScheme.secondary,
           ),
           shape: RoundedRectangleBorder(
-            side: BorderSide(color: colorScheme.primary),
+            side: BorderSide(color: colorScheme.secondary),
             borderRadius: BorderRadius.circular(AppConfig.borderRadius / 2),
           ),
         ),
@@ -122,11 +201,23 @@ abstract class FluffyThemes {
           : const SnackBarThemeData(behavior: SnackBarBehavior.floating),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: colorScheme.secondaryContainer,
-          foregroundColor: colorScheme.onSecondaryContainer,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.surface,
           elevation: 0,
           padding: const EdgeInsets.all(16),
-          textStyle: const TextStyle(fontSize: 16),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: colorScheme.surface,
+        titleTextStyle:
+            GoogleFonts.righteous(color: colorScheme.primary, fontSize: 18),
+        contentTextStyle: TextStyle(
+          color: colorScheme.onSurface,
+          decorationColor: colorScheme.onSurface,
         ),
       ),
     );
@@ -141,15 +232,11 @@ extension on Brightness {
 extension BubbleColorTheme on ThemeData {
   Color get bubbleColor => brightness == Brightness.light
       ? colorScheme.primary
-      : colorScheme.primaryContainer;
+      : colorScheme.primary.withValues(alpha: 0.1);
 
-  Color get onBubbleColor => brightness == Brightness.light
-      ? colorScheme.onPrimary
-      : colorScheme.onPrimaryContainer;
+  Color get onBubbleColor => colorScheme.onTertiary;
 
-  Color get secondaryBubbleColor => HSLColor.fromColor(
-        brightness == Brightness.light
-            ? colorScheme.tertiary
-            : colorScheme.tertiaryContainer,
-      ).withSaturation(0.5).toColor();
+  Color get secondaryBubbleColor => brightness == Brightness.light
+      ? colorScheme.tertiary
+      : colorScheme.secondary.withValues(alpha: 0.5);
 }

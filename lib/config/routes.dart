@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fluffychat/pages/login/auto_login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,7 @@ import 'package:fluffychat/pages/device_settings/device_settings.dart';
 import 'package:fluffychat/pages/homeserver_picker/homeserver_picker.dart';
 import 'package:fluffychat/pages/invitation_selection/invitation_selection.dart';
 import 'package:fluffychat/pages/login/login.dart';
+import 'package:fluffychat/pages/register/register.dart';
 import 'package:fluffychat/pages/new_group/new_group.dart';
 import 'package:fluffychat/pages/new_private_chat/new_private_chat.dart';
 import 'package:fluffychat/pages/settings/settings.dart';
@@ -54,7 +56,7 @@ abstract class AppRoutes {
   ) =>
       Matrix.of(context).widget.clients.any((client) => client.isLogged())
           ? null
-          : '/home';
+          : '/homeserver';
 
   AppRoutes();
 
@@ -64,27 +66,49 @@ abstract class AppRoutes {
       redirect: (context, state) =>
           Matrix.of(context).widget.clients.any((client) => client.isLogged())
               ? '/rooms'
-              : '/home',
+              : '/homeserver',
     ),
     GoRoute(
-      path: '/home',
+      path: '/homeserver',
       pageBuilder: (context, state) => defaultPageBuilder(
         context,
         state,
-        const HomeserverPicker(addMultiAccount: false),
+        const AutoLoginScreen(),
       ),
-      redirect: loggedInRedirect,
-      routes: [
-        GoRoute(
-          path: 'login',
-          pageBuilder: (context, state) => defaultPageBuilder(
-            context,
-            state,
-            Login(client: state.extra as Client),
-          ),
-          redirect: loggedInRedirect,
-        ),
-      ],
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) {
+        final extra = state.extra;
+
+        if (extra == null || extra is! Client) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/');
+          });
+
+          return const SizedBox.shrink();
+        }
+
+        final client = extra;
+        return Login(client: client);
+      },
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) {
+        final extra = state.extra;
+
+        if (extra == null || extra is! Client) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.go('/');
+          });
+
+          return const SizedBox.shrink();
+        }
+
+        final client = extra;
+        return Register(client: client);
+      },
     ),
     GoRoute(
       path: '/logs',
@@ -158,33 +182,33 @@ abstract class AppRoutes {
               ],
               redirect: loggedOutRedirect,
             ),
-            GoRoute(
-              path: 'newprivatechat',
-              pageBuilder: (context, state) => defaultPageBuilder(
-                context,
-                state,
-                const NewPrivateChat(),
-              ),
-              redirect: loggedOutRedirect,
-            ),
-            GoRoute(
-              path: 'newgroup',
-              pageBuilder: (context, state) => defaultPageBuilder(
-                context,
-                state,
-                const NewGroup(),
-              ),
-              redirect: loggedOutRedirect,
-            ),
-            GoRoute(
-              path: 'newspace',
-              pageBuilder: (context, state) => defaultPageBuilder(
-                context,
-                state,
-                const NewGroup(createGroupType: CreateGroupType.space),
-              ),
-              redirect: loggedOutRedirect,
-            ),
+            // GoRoute(
+            //   path: 'newprivatechat',
+            //   pageBuilder: (context, state) => defaultPageBuilder(
+            //     context,
+            //     state,
+            //     const NewPrivateChat(),
+            //   ),
+            //   redirect: loggedOutRedirect,
+            // ),
+            // GoRoute(
+            //   path: 'newgroup',
+            //   pageBuilder: (context, state) => defaultPageBuilder(
+            //     context,
+            //     state,
+            //     const NewGroup(),
+            //   ),
+            //   redirect: loggedOutRedirect,
+            // ),
+            // GoRoute(
+            //   path: 'newspace',
+            //   pageBuilder: (context, state) => defaultPageBuilder(
+            //     context,
+            //     state,
+            //     const NewGroup(createGroupType: CreateGroupType.space),
+            //   ),
+            //   redirect: loggedOutRedirect,
+            // ),
             ShellRoute(
               pageBuilder: (context, state, child) => defaultPageBuilder(
                 context,
